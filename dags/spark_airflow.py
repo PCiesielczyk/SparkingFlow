@@ -21,7 +21,14 @@ start = PythonOperator(
 python_job = SparkSubmitOperator(
     task_id="python_job",
     conn_id="spark-conn",
-    application="jobs/python/wordcountjob.py",
+    application="jobs/python/wordcount.py",
+    dag=dag
+)
+
+python_job_partitioning = SparkSubmitOperator(
+    task_id="python_job_partitioning",
+    conn_id="spark-conn",
+    application="jobs/python/partitioning.py",
     dag=dag
 )
 
@@ -47,4 +54,4 @@ end = PythonOperator(
     dag=dag
 )
 
-start >> [python_job, scala_job, java_job] >> end
+start >> [python_job, python_job_partitioning, scala_job, java_job] >> end

@@ -1,9 +1,11 @@
 version: '3'
 
 x-spark-common: &spark-common
-  image: bitnami/spark:latest
+  image: bitnami/spark:3.4.2
   volumes:
     - ./jobs:/opt/bitnami/spark/jobs
+    - ./archive:/opt/airflow/archive
+    - ./partitions:/opt/airflow/partitions
   networks:
     - code-with-yu
 
@@ -17,6 +19,8 @@ x-airflow-common: &airflow-common
     - ./jobs:/opt/airflow/jobs
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
+    - ./archive:/opt/airflow/archive
+    - ./partitions:/opt/airflow/partitions
   depends_on:
     - postgres
   networks:
@@ -29,6 +33,9 @@ services:
     ports:
       - "9090:8080"
       - "7077:7077"
+    volumes:
+      - ./archive:/opt/airflow/archive
+      - ./partitions:/opt/airflow/partitions
 
   spark-worker:
     <<: *spark-common
@@ -40,6 +47,9 @@ services:
       SPARK_WORKER_CORES: 2
       SPARK_WORKER_MEMORY: 1g
       SPARK_MASTER_URL: spark://spark-master:7077
+    volumes:
+      - ./archive:/opt/airflow/archive
+      - ./partitions:/opt/airflow/partitions
 
   postgres:
     image: postgres:14.0
@@ -60,7 +70,7 @@ services:
 
   scheduler:
     <<: *airflow-common
-    command: bash -c "airflow db migrate && airflow users create --username admin --firstname Yusuf --lastname Ganiyu --role Admin --email airscholar@gmail.com --password admin && airflow scheduler"
+    command: bash -c "airflow db migrate && airflow users create --username admin --firstname Bart --lastname Marszalek --role Admin --email bartosz.j.marszalek@gmail.com --password admin && airflow scheduler"
 
 networks:
   code-with-yu:
