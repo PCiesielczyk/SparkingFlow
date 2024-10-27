@@ -1,6 +1,8 @@
 # Big Data Project Notes
 ### Prerequisites
-Upload `rba-dataset-sample.csv` to `/archive` (its too big to keep on Github repo)
+Create directories: data/partitions, database
+Upload `rba-dataset-sample.csv` to `/data` (its too big to keep on Github repo)
+Remember to pick the proper JAVA_HOME in Dockerfile
 
 # Apache Airflow on Steroids with Java, Scala and Python Spark Jobs
 

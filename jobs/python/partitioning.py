@@ -6,7 +6,6 @@ df = spark.read.csv("/opt/airflow/archive/rba-dataset-sample.csv", header=True, 
 
 df = df.repartition(10)
 df.show()
-df.write.option("header", "true").csv("/opt/airflow/partitions/rba_part")
-
+df.write.mode("overwrite").option("header", "true").csv("/data/partitions/rba_part")
 
 spark.stop()
