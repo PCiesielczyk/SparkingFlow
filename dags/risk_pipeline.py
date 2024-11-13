@@ -43,8 +43,11 @@ asn_partitioning = SparkSubmitOperator(
     dag=dag
 )
 
-normalize_session = EmptyOperator(
+normalize_session = SparkSubmitOperator(
     task_id="normalize_session",
+    conn_id="spark-conn",
+    application="jobs/python/normalize_session.py",
+    application_args=["/data/rba_partitions", "/data/session"],
     dag=dag
 )
 
