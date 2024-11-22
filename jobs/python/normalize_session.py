@@ -1,6 +1,7 @@
 import argparse
 
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import split, col
 
 parser = argparse.ArgumentParser()
 
@@ -11,12 +12,17 @@ args = parser.parse_args()
 
 spark = SparkSession.builder.appName("NormalizingSession").getOrCreate()
 
-# TODO: how to read csv partition dir
 df = spark.read.csv(args.input_path, header=True, inferSchema=True)
 
-# extracting columns
+df = df.withColumn("Login Date", split(col("Login Timestamp"), " ").getItem(0)) \
+       .withColumn("Login Time", split(col("Login Timestamp"), " ").getItem(1))
 
-# extracting date/time
+columns_to_select = ["Login Date", "Login Time", "Device Type", "Login Successful", "Country", "Region", "City"]
+df = df.select(*columns_to_select)
 
-# save in output_path
+df.createOrReplaceTempView("session")
+
+df.write.mode("overwrite").option("header", "true").csv(args.output_path)
+
+df.show()
 spark.stop()

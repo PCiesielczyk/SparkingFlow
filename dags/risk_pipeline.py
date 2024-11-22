@@ -51,13 +51,19 @@ normalize_session = SparkSubmitOperator(
     dag=dag
 )
 
-merge_asn = EmptyOperator(
-    task_id="merge_asn",
+normalize_source = SparkSubmitOperator(
+    task_id="normalize_source",
+    conn_id="spark-conn",
+    application="jobs/python/normalize_source.py",
+    application_args=["/data/rba_partitions", "/data/source"],
     dag=dag
 )
 
-normalize_asn = EmptyOperator(
+normalize_asn = SparkSubmitOperator(
     task_id="normalize_asn",
+    conn_id="spark-conn",
+    application="jobs/python/normalize_asn.py",
+    application_args=["/data/asn_partitions", "/data/asn_details"],
     dag=dag
 )
 
@@ -68,7 +74,7 @@ end = PythonOperator(
 )
 
 start >> health_check >> [rba_partitioning, asn_partitioning]
-rba_partitioning >> [normalize_session, merge_asn, normalize_asn]
-asn_partitioning >> [merge_asn, normalize_asn]
-[normalize_session, merge_asn, normalize_asn] >> end
+rba_partitioning >> [normalize_session, normalize_source]
+asn_partitioning >> [normalize_asn]
+[normalize_session, normalize_source, normalize_asn] >> end
 
