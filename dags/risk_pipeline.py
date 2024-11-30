@@ -1,7 +1,6 @@
 import airflow
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from airflow.operators.empty import EmptyOperator
 from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
 
 dag = DAG(
@@ -67,6 +66,22 @@ normalize_asn = SparkSubmitOperator(
     dag=dag
 )
 
+process_session = SparkSubmitOperator(
+    task_id="process_session",
+    conn_id="spark-conn",
+    application="jobs/python/process_session.py",
+    application_args=["/data/session", "/data/session_output"],
+    dag=dag
+)
+
+process_source_asn = SparkSubmitOperator(
+    task_id="process_source_asn",
+    conn_id="spark-conn",
+    application="jobs/python/process_source_asn.py",
+    application_args=["/data/source", "/data/asn_details", "/data/source_asn_output"],
+    dag=dag
+)
+
 end = PythonOperator(
     task_id="end",
     python_callable = lambda: print("Jobs completed successfully"),
@@ -76,5 +91,7 @@ end = PythonOperator(
 start >> health_check >> [rba_partitioning, asn_partitioning]
 rba_partitioning >> [normalize_session, normalize_source]
 asn_partitioning >> [normalize_asn]
-[normalize_session, normalize_source, normalize_asn] >> end
+normalize_session >> process_session
+[normalize_source, normalize_asn] >> process_source_asn
+[process_session, process_source_asn] >> end
 
