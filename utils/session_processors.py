@@ -26,6 +26,8 @@ def prepare_logins_per_minut_graph(input_df: DataFrame, output_path: str):
 
     pandas_stats = pivot_stats.toPandas()
 
+    pandas_stats.to_csv(output_path + "/tables/logins_per_minute.csv", index=False)
+
     minutes_of_day = pandas_stats["MinuteOfDay"]
     successful = pandas_stats["true"]
     unsuccessful = pandas_stats["false"]
@@ -60,6 +62,8 @@ def prepare_logins_per_day_graph(input_df: DataFrame, output_path: str):
     pivot_stats.show()
 
     pandas_stats = pivot_stats.toPandas()
+
+    pandas_stats.to_csv(output_path + "/tables/logins_per_day.csv", index=False)
 
     days_of_year = pandas_stats["DayOfYear"]
     successful = pandas_stats["true"]
@@ -110,6 +114,8 @@ def prepare_location_table(input_df: DataFrame, output_path: str):
             top_countries["Login Count"] / top_countries["Login Count"].sum() * 100
     )
 
+    top_countries.to_csv(output_path + "/tables/locations.csv", index=False)
+
     plt.figure(figsize=(8, 8))
     plt.pie(
         top_countries["Login Count"],
@@ -135,6 +141,8 @@ def prepare_device_usage_table(input_df: DataFrame, output_path: str):
 
     hourly_device_stats.show()
     hourly_device_stats = hourly_device_stats.toPandas()
+
+    hourly_device_stats.to_csv(output_path + "/tables/device_usage.csv", index=False)
 
     hours = hourly_device_stats["HourOfDay"]
     mobile = hourly_device_stats["mobile"]

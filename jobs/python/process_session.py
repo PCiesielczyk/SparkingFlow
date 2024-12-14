@@ -19,6 +19,7 @@ spark = SparkSession.builder.appName("ProcessSession").getOrCreate()
 
 df = spark.read.csv(args.input_path, header=True, inferSchema=True)
 os.makedirs(args.output_path, exist_ok=True)
+os.makedirs(args.output_path + "/tables", exist_ok=True)
 
 prepare_logins_per_minut_graph(df, output_path)
 prepare_logins_per_day_graph(df, output_path)

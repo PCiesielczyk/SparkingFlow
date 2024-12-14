@@ -17,7 +17,7 @@ parser.add_argument('output_path')
 args = parser.parse_args()
 output_path = args.output_path
 
-spark = SparkSession.builder.appName("ProcessSession").getOrCreate()
+spark = SparkSession.builder.appName("ProcessSourceAsn").getOrCreate()
 
 source_df = spark.read.csv(args.input_source_path, header=True, inferSchema=True)
 asn_df = spark.read.csv(args.input_asn_path, header=True, inferSchema=True)
@@ -29,6 +29,7 @@ enriched_df = source_df.join(filtered_asn_df, source_df["ASN"] == filtered_asn_d
 enriched_df.show(100)
 
 os.makedirs(args.output_path, exist_ok=True)
+os.makedirs(args.output_path + "/tables", exist_ok=True)
 
 prepare_top_org_by_logs_graph(enriched_df, output_path)
 prepare_top_attacks_per_org(enriched_df, output_path)

@@ -18,7 +18,6 @@ start = PythonOperator(
     dag=dag
 )
 
-#TODO: zmienic wordcount.py na cos ze sczytaniem df
 health_check = SparkSubmitOperator(
     task_id="health_check",
     conn_id="spark-conn",

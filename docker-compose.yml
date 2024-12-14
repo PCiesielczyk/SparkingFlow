@@ -50,6 +50,9 @@ services:
       SPARK_MASTER_URL: spark://spark-master:7077
     volumes:
       - ./data:/data
+    deploy:
+      replicas: 2
+      mode: replicated
 
   postgres:
     image: postgres:14.0

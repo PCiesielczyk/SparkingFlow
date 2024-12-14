@@ -15,6 +15,8 @@ def prepare_top_org_by_logs_graph(input_df: DataFrame, output_path: str):
 
     org_stats_pandas = org_stats.toPandas()
 
+    org_stats_pandas.to_csv(output_path + "/tables/top_orgs_by_logs.csv", index=False)
+
     plt.figure(figsize=(12, 6))
     plt.bar(org_stats_pandas["name"], org_stats_pandas["Logins"], color="skyblue")
     plt.xticks(rotation=45, ha="right")
@@ -41,6 +43,7 @@ def prepare_top_attacks_per_org(input_df: DataFrame, output_path: str):
     )
 
     pandas_stats = attack_stats.toPandas()
+    pandas_stats.to_csv(output_path + "/tables/attack_stats.csv", index=False)
 
     asn_names = pandas_stats["name"]
     attack_logins = pandas_stats["Attack Logins"]
@@ -76,6 +79,7 @@ def prepare_account_takeover_graph(input_df: DataFrame, output_path: str):
     )
 
     pandas_stats = takeover_stats.toPandas()
+    pandas_stats.to_csv(output_path + "/tables/takeover_stats.csv", index=False)
 
     asn_names = pandas_stats["name"]
     takeover_counts = pandas_stats["Account Takeover Count"]
@@ -105,6 +109,7 @@ def prepare_os_account_takeover_graph(input_df: DataFrame, output_path: str):
     )
 
     pandas_stats = takeover_stats.toPandas()
+    pandas_stats.to_csv(output_path + "/tables/os_takeover_stats.csv", index=False)
 
     os_names = pandas_stats["OS Name"]
     takeover_counts = pandas_stats["Account Takeover Count"]
@@ -134,6 +139,7 @@ def prepare_os_attack_graph(input_df: DataFrame, output_path: str):
     )
 
     pandas_stats = attack_stats.toPandas()
+    pandas_stats.to_csv(output_path + "/tables/os_attacks.csv", index=False)
 
     os_names = pandas_stats["OS Name"]
     takeover_counts = pandas_stats["Attack IP Count"]
