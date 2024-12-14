@@ -29,7 +29,15 @@ rba_partitioning = SparkSubmitOperator(
     task_id="rba_partitioning",
     conn_id="spark-conn",
     application="jobs/python/partitioning.py",
-    application_args=["10", "/data/rba-dataset-sample.csv", "/data/rba_partitions"],
+    application_args=["10", "/data/rba-dataset.csv", "/data/rba_partitions"],
+    dag=dag
+)
+
+model_training = SparkSubmitOperator(
+    task_id="model_training",
+    conn_id="spark-conn",
+    application="jobs/python/model_training.py",
+    application_args=["/data/rba_partitions", "/data/classification"],
     dag=dag
 )
 
@@ -88,7 +96,7 @@ end = PythonOperator(
 )
 
 start >> health_check >> [rba_partitioning, asn_partitioning]
-rba_partitioning >> [normalize_session, normalize_source]
+rba_partitioning >> [normalize_session, normalize_source, model_training]
 asn_partitioning >> [normalize_asn]
 normalize_session >> process_session
 [normalize_source, normalize_asn] >> process_source_asn
