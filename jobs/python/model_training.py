@@ -4,36 +4,15 @@ from pyspark.ml.classification import LogisticRegression
 from pyspark.ml.evaluation import BinaryClassificationEvaluator, MulticlassClassificationEvaluator
 from pyspark.ml.feature import StringIndexer, VectorAssembler
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col
-
-import os
+from pyspark.sql.functions import col, to_json
 
 parser = argparse.ArgumentParser()
-
 parser.add_argument('input_path')
-parser.add_argument('output_path')
-
 args = parser.parse_args()
-output_path = args.output_path
 
 spark = SparkSession.builder.appName("ModelTraining").getOrCreate()
 
 df = spark.read.csv(args.input_path, header=True, inferSchema=True)
-os.makedirs(args.output_path, exist_ok=True)
-
-selected_cols = [
-    "Country",
-    "ASN",
-    "Device Type",
-    "Login Successful",
-    "Is Attack IP"
-]
-
-df = df.select(*selected_cols, "Is Account Takeover")
-
-df = df.fillna({"Country": "unknown", "Device Type": "unknown"})
-
-df.show()
 
 indexer_cols = ["Country", "Device Type"]
 for col_name in indexer_cols:
