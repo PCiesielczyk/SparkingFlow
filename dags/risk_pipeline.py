@@ -20,7 +20,8 @@ start = PythonOperator(
 health_check = SparkSubmitOperator(
     task_id="health_check",
     conn_id="spark-conn",
-    application="jobs/python/wordcount.py",
+    application="jobs/python/health_check.py",
+    application_args=["/data/rba-dataset-sample.csv"],
     dag=dag
 )
 
