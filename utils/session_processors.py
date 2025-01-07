@@ -133,7 +133,7 @@ def prepare_device_usage_table(input_df: DataFrame, output_path: str):
         .groupBy("HourOfDay", "Device Type")
         .agg(count("*").alias("Count"))
         .groupBy("HourOfDay")
-        .pivot("Device Type", ["mobile", "desktop", "tablet"])  # Zakładamy te typy urządzeń
+        .pivot("Device Type", ["mobile", "desktop", "tablet"])
         .sum("Count")
         .fillna(0)
         .orderBy("HourOfDay")
